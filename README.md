@@ -1,8 +1,46 @@
+[English](README.md) | [中文](README_zh.md)
+
 # QuizPlatform
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.8.
+QuizPlatform is a web-based quiz application built with Angular. It allows users to take quizzes, view results, and provides a modular structure for extending quiz features. The project is organized for scalability and maintainability.
 
-## Development server
+## Project Structure
+
+The main application code is located in `src/app`:
+
+```
+src/app/
+├── app.component.*        # Root component (HTML, SCSS, TS, spec)
+├── app.module.ts          # Main Angular module
+├── app.config.*           # App configuration files
+├── app.routes.*           # App routing configuration
+├── components/            # Feature and UI components
+│   ├── header/            # Header (navigation)
+│   ├── home/              # Home/landing page
+│   ├── quiz/              # Quiz interface (taking quizzes)
+│   └── quiz-results/      # Quiz results display
+├── models/                # TypeScript interfaces and models
+├── services/              # Application services (e.g., data, quiz logic)
+```
+
+### Main Components
+- **Header**: Displays the navigation bar.
+- **Home**: Welcome page, introduction, and navigation entry point.
+- **Quiz**: Handles quiz questions, user input, and quiz flow.
+- **Quiz Results**: Shows user performance and results after a quiz.
+
+### Extending the App
+- **Add a new component:**
+  ```bash
+  ng generate component components/new-component
+  ```
+- **Add a new service:**
+  ```bash
+  ng generate service services/new-service
+  ```
+- **Add models:** Place TypeScript interfaces in `models/` for type safety.
+
+## Development
 
 To start a local development server, run:
 
@@ -10,50 +48,31 @@ To start a local development server, run:
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
+Open your browser at `http://localhost:4200/`.
 
 ## Building
 
-To build the project run:
+To build the project:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+## Testing
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- **Unit tests:**
+  ```bash
+  ng test
+  ```
+- **End-to-end (e2e) tests:**
+  ```bash
+  ng e2e
+  ```
+  (Configure your preferred e2e framework if needed.)
 
 ## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [Angular CLI Documentation](https://angular.dev/tools/cli)
+- [Angular Official Documentation](https://angular.dev/)

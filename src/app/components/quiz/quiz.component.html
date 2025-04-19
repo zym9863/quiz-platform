@@ -1,0 +1,82 @@
+<div class="quiz-container" *ngIf="quiz && !quizCompleted">
+  <div class="quiz-header">
+    <div class="quiz-logo">
+      <mat-icon class="quiz-main-icon">quiz</mat-icon>
+    </div>
+    <h1>{{ quiz.title }}</h1>
+    <div class="quiz-progress">
+      <mat-icon class="quiz-progress-icon">list_alt</mat-icon>
+      <span>问题 {{ currentQuestionIndex + 1 }}/{{ quiz.questions.length }}</span>
+      <mat-progress-bar mode="determinate" [value]="progressPercentage"></mat-progress-bar>
+    </div>
+    <div class="timer" *ngIf="timeLeft > 0">
+      <mat-icon class="timer-icon">access_time</mat-icon>
+      <span>剩余时间: {{ formatTime(timeLeft) }}</span>
+      <mat-progress-bar mode="determinate" [value]="timeLeftPercentage" color="accent"></mat-progress-bar>
+    </div>
+  </div>
+
+  <div class="question-container" *ngIf="currentQuestion">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ currentQuestion.text }}</mat-card-title>
+        <mat-card-subtitle *ngIf="currentQuestion.type === 'multiple-choice'">
+          (多选题 - 可选择多个答案)
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="options-container">
+          <ng-container *ngIf="currentQuestion.type === 'single-choice' || currentQuestion.type === 'true-false'">
+            <mat-radio-group
+              [value]="userAnswers[currentQuestion.id]?.[0]"
+              (change)="selectOption(currentQuestion.id, $event.value, true)">
+              <mat-radio-button
+                *ngFor="let option of currentQuestion.options"
+                [value]="option.id"
+                class="option">
+                <mat-icon class="option-icon">radio_button_unchecked</mat-icon>
+                {{ option.text }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </ng-container>
+          
+          <ng-container *ngIf="currentQuestion.type === 'multiple-choice'">
+            <div *ngFor="let option of currentQuestion.options" class="option">
+              <mat-checkbox 
+                [checked]="isOptionSelected(currentQuestion.id, option.id)"
+                (change)="selectOption(currentQuestion.id, option.id, false)">
+                <mat-icon class="option-icon">check_box_outline_blank</mat-icon>
+                {{ option.text }}
+              </mat-checkbox>
+            </div>
+          </ng-container>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="navigation-buttons">
+    <button mat-raised-button color="primary" 
+            [disabled]="currentQuestionIndex === 0"
+            (click)="previousQuestion()">
+      <mat-icon>arrow_back</mat-icon> 上一题
+    </button>
+    
+    <button mat-raised-button color="primary" 
+            *ngIf="currentQuestionIndex < quiz.questions.length - 1"
+            (click)="nextQuestion()">
+      下一题 <mat-icon>arrow_forward</mat-icon>
+    </button>
+    
+    <button mat-raised-button color="accent" 
+            *ngIf="currentQuestionIndex === quiz.questions.length - 1"
+            (click)="submitQuiz()">
+      <mat-icon>send</mat-icon> 提交答卷
+    </button>
+  </div>
+</div>
+
+<div class="quiz-loading" *ngIf="!quiz">
+  <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+  <h2>加载测验中...</h2>
+</div>

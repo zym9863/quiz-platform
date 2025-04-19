@@ -1,0 +1,98 @@
+<div class="results-container" *ngIf="quizResult && quiz">
+  <div class="results-header">
+    <mat-icon class="trophy-icon">emoji_events</mat-icon>
+    <h1>测验结果</h1>
+  </div>
+  
+  <mat-card class="summary-card">
+    <mat-card-header>
+      <mat-card-title>{{ quizResult.quizTitle }}</mat-card-title>
+      <mat-card-subtitle>完成时间: {{ quizResult.completedAt | date:'medium' }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="result-summary">
+        <div class="summary-item score-item">
+          <mat-icon class="summary-icon score">star</mat-icon>
+          <h3>得分</h3>
+          <p class="score">{{ quizResult.earnedPoints }} / {{ quizResult.totalPoints }}</p>
+          <p class="percentage">{{ quizResult.percentage.toFixed(1) }}%</p>
+        </div>
+        <div class="summary-item correct-item">
+          <mat-icon class="summary-icon correct">check_circle</mat-icon>
+          <h3>正确答案</h3>
+          <p>{{ quizResult.correctAnswers }} / {{ quizResult.totalQuestions }}</p>
+        </div>
+        <div class="summary-item time-item">
+          <mat-icon class="summary-icon time">schedule</mat-icon>
+          <h3>用时</h3>
+          <p>{{ formatTime(quizResult.timeTaken) }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  
+  <h2>详细答题情况</h2>
+  
+  <div class="answers-container">
+    <mat-card *ngFor="let answer of quizResult.answers" class="answer-card" 
+             [ngClass]="{'correct': answer.isCorrect, 'incorrect': !answer.isCorrect}">
+      <mat-card-header>
+        <div class="answer-status">
+          <mat-icon *ngIf="answer.isCorrect" class="answer-status-icon correct">check_circle</mat-icon>
+          <mat-icon *ngIf="!answer.isCorrect" class="answer-status-icon incorrect">cancel</mat-icon>
+        </div>
+        <mat-card-title>{{ getQuestionById(answer.questionId)?.text }}</mat-card-title>
+        <mat-card-subtitle *ngIf="answer.isCorrect">
+          正确 (+{{ answer.points }}分)
+        </mat-card-subtitle>
+        <mat-card-subtitle *ngIf="!answer.isCorrect">
+          错误 (0/{{ answer.maxPoints }}分)
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="selected-options">
+          <h4>您的答案:</h4>
+          <ul>
+            <li *ngFor="let optionId of answer.selectedOptionIds">
+              {{ getOptionText(answer.questionId, optionId) }}
+            </li>
+            <li *ngIf="answer.selectedOptionIds.length === 0">未作答</li>
+          </ul>
+        </div>
+        
+        <div class="correct-answer" *ngIf="!answer.isCorrect">
+          <h4>正确答案:</h4>
+          <ul>
+            <ng-container *ngIf="getQuestionById(answer.questionId)?.correctOptionId as correctOptionId; else noAnswer">
+              <li *ngFor="let optionId of correctOptionId.split(',')">
+                {{ getOptionText(answer.questionId, optionId) }}
+              </li>
+            </ng-container>
+            <ng-template #noAnswer>
+              <li>无</li>
+            </ng-template>
+          </ul>
+        </div>
+        
+        <div class="explanation" *ngIf="getQuestionById(answer.questionId)?.explanation">
+          <h4>解释:</h4>
+          <p>{{ getQuestionById(answer.questionId)?.explanation }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+  <div class="action-buttons">
+    <button mat-raised-button color="primary" (click)="retakeQuiz()">
+      <mat-icon>replay</mat-icon> 重新测验
+    </button>
+    <button mat-raised-button color="accent" (click)="returnToHome()">
+      <mat-icon>home</mat-icon> 返回首页
+    </button>
+  </div>
+</div>
+
+<div class="loading" *ngIf="!quizResult || !quiz">
+  <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+  <h2>加载结果中...</h2>
+</div>
